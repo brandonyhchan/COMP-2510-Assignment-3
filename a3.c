@@ -3,7 +3,6 @@
 #include <string.h>
 #include "a3.h"
 
-
 /**
  * File:    a3.c
  *
@@ -131,18 +130,6 @@ void addToLinkedList(llptr linkList, nodeptr node) {
 }
 
 /**
- * Stores a string value into a node's identifier parameter.
- *
- * @param node to be modified
- * @param str to be stored
- */
-void saveString(nodeptr node, char *str) {
-  for (int i = 0; i < strlen(str); i++) {
-    node->identifier[i] = str[i];
-  }
-}
-
-/**
  * Creates a node representing a block of memory from a string.
  *
  * @param str from which the node will be created
@@ -256,6 +243,64 @@ void compactMemory(llptr linkList) {
   addToLinkedList(linkList, newHole);
 }
 
+/**
+ * Contains conditional logic to execute the commands the user wishes through the menu. Contains
+ * multiple options to load an input file, merge holes, compact memory and print the memory view.
+ *
+ * @param fileNotRead
+ * @param linkedList data structure with the process data
+ */
+void menu(llptr linkedList) {
+    int input;
+    int fileNotRead = 1;
+    do {
+        printf("1. load an input file\n2. merge holes\n3. compact memory\n4. print memory view\n5. exit the program\n");
+        scanf("%d", &input);
+        switch (input) {
+            case 1: {
+                if (fileNotRead) {
+                    fileNotRead = 0;
+                    printf("1. Type the file name: ");
+                    char *fileName = malloc(sizeof(char) * 20);
+                    scanf("%s", fileName);
+                    FILE *fptr = fopen(fileName, "r");
+
+                    if (fptr == NULL) {
+                        printf("Error: file could not be found.");
+                        exit(1);
+                    }
+                    readFile(fptr, linkedList);
+                    printf("operation successful\n");
+                    break;
+                } else {
+                    printf("ERROR: You have already read a file. Please exit the program to read another file.\n");
+                    break;
+                }
+            }
+            case 2: {
+                mergeHoles(linkedList);
+                printf("operation successful\n");
+                break;
+            }
+            case 3: {
+                compactMemory(linkedList);
+                printf("operation successful\n");
+                break;
+            }
+            case 4: {
+                printMemory(linkedList);
+                break;
+            }
+            case 5: {
+                printf("good bye");
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+    } while (input != 5);
+}
 
 /**
  * Main function that controls the option menu. Nested calls are
@@ -264,47 +309,8 @@ void compactMemory(llptr linkList) {
  * @return 0 if execution runs without error
  */
 int main() {
-  int input;
-  int fileNotRead = 1;
   llptr linkList = createLinkedList();
-  do {
-    printf("1. load an input file\n2. merge holes\n3. compact memory\n4. print memory view\n5. exit the program\n");
-    scanf("%d", &input);
-    switch (input) {
-      case 1: {
-        if (fileNotRead) {
-          fileNotRead = 0;
-          printf("1. Type the file name: ");
-          char *fileName = malloc(sizeof(char) * 20);
-          scanf("%s", fileName);
-          FILE *fptr = fopen(fileName, "r");
-          readFile(fptr, linkList);
-          printf("operation successful\n");
-          break;
-        } else {
-          printf("ERROR: You have already read a file. Please exit the program to read another file.\n");
-          break;
-        }
-      }
-      case 2: {
-        mergeHoles(linkList);
-        printf("operation successful\n");
-        break;
-      }
-      case 3: {
-        compactMemory(linkList);
-        printf("operation successful\n");
-        break;
-      }
-      case 4: {
-        printMemory(linkList);
-        break;
-      }
-      case 5: {
-        printf("good bye");
-        break;
-      }
-    }
-  } while (input != 5);
+
+  menu(linkList);
   return 0;
 }
