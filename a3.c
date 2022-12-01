@@ -3,6 +3,35 @@
 #include <string.h>
 #include "a3.h"
 
+
+/**
+ * File:    a3.c
+ *
+ * Author: Buck Sin - A00805677
+ * Author: Brandon Chan - A01026254
+ * Author: Princeton Dychinco - A00849214
+ * Author: Stanley Chow - A01266659
+ *
+ * COMP 2510: Set B
+ * Date: Nov 30, 2022
+ *
+ * Summary of File:
+ *
+ *      This program opens an interactive menu that allows the user
+ *      to select their choice from 5 options. The options available
+ *      to the user include: loading an input file, merging adjacent
+ *      holes in memory, compacting memory, printing the memory view
+ *      and terminating the program.
+ */
+
+
+/**
+ * Splits a linkedlist into front and back halves.
+ *
+ * @param source head of the linkedlist to be split
+ * @param frontRef front half of linkedlist
+ * @param backRef back half of linkedlist
+ */
 void frontBackSplit(nodeptr source, nodeptr *frontRef, nodeptr *backRef) {
   nodeptr fast;
   nodeptr slow;
@@ -22,6 +51,14 @@ void frontBackSplit(nodeptr source, nodeptr *frontRef, nodeptr *backRef) {
   slow->next = NULL;
 }
 
+/**
+ * Compares two nodes and returns the one with the lower base.
+ *
+ * @param a first node
+ * @param b second node
+ * @return pointer to the node with lower base. Returns the other if
+ * one of them is null.
+ */
 nodeptr sortedMerge(nodeptr a, nodeptr b) {
   nodeptr result = NULL;
 
@@ -41,6 +78,11 @@ nodeptr sortedMerge(nodeptr a, nodeptr b) {
   return result;
 }
 
+/**
+ * Performs a merge sort on a linkedlist.
+ *
+ * @param headRef head of the linkedlist to be sorted
+ */
 void mergeSort(nodeptr *headRef) {
   nodeptr head = *headRef;
   nodeptr a;
@@ -57,6 +99,11 @@ void mergeSort(nodeptr *headRef) {
   *headRef = sortedMerge(a, b);
 }
 
+/**
+ * Creates an empty linkedlist.
+ *
+ * @return a pointer to the newly created linkedlist
+ */
 llptr createLinkedList() {
   llptr linkList = malloc(sizeof(llptr));
   linkList->head = NULL;
@@ -65,6 +112,12 @@ llptr createLinkedList() {
   return linkList;
 }
 
+/**
+ * Adds a node to a linkedlist.
+ *
+ * @param linkList to be appended
+ * @param node pointer to the node being added
+ */
 void addToLinkedList(llptr linkList, nodeptr node) {
   if (linkList->head == NULL) {
     linkList->head = node;
@@ -77,12 +130,24 @@ void addToLinkedList(llptr linkList, nodeptr node) {
   }
 }
 
+/**
+ * Stores a string value into a node's identifier parameter.
+ *
+ * @param node to be modified
+ * @param str to be stored
+ */
 void saveString(nodeptr node, char *str) {
   for (int i = 0; i < strlen(str); i++) {
     node->identifier[i] = str[i];
   }
 }
 
+/**
+ * Creates a node representing a block of memory from a string.
+ *
+ * @param str from which the node will be created
+ * @return pointer to a newly created node
+ */
 nodeptr createNode(char **str) {
   nodeptr node = (nodeptr) malloc(sizeof(struct Node));
   strcpy(node->identifier, str[0]);
@@ -92,6 +157,13 @@ nodeptr createNode(char **str) {
   return node;
 }
 
+/**
+ * Reads an input file. creates nodes for each block of memory,
+ * and stores a sorted linkedlist.
+ *
+ * @param fptr input text file
+ * @param linkList storing the sorting blocks of memory
+ */
 void readFile(FILE *fptr, llptr linkList) {
   char buffer[100];
   while (fgets(buffer, 100, fptr) != NULL) {
@@ -110,6 +182,11 @@ void readFile(FILE *fptr, llptr linkList) {
   mergeSort(&(linkList->head));
 }
 
+/**
+ * Prints the view from memory. Blocks of memory are separated by lines.
+ *
+ * @param linkList containing blocks of memory
+ */
 void printMemory(llptr linkList) {
   nodeptr node = linkList->head;
   int counter = 1;
@@ -124,6 +201,11 @@ void printMemory(llptr linkList) {
   }
 }
 
+/**
+ * Merges adjacent holes of free memory to avoid fragmentation.
+ *
+ * @param linkList containing blocks of memory
+ */
 void mergeHoles(llptr linkList) {
   nodeptr node = linkList->head;
   int counter = 3;
@@ -140,7 +222,8 @@ void mergeHoles(llptr linkList) {
 }
 
 /**
- * combines the non-process hole nodes into one node and places it at the end of the linkedlist
+ * Combines the non-process hole nodes into one node and places it at the end of the linkedlist.
+ *
  * @param linkList data structure with the process data
  */
 void compactMemory(llptr linkList) {
@@ -173,6 +256,13 @@ void compactMemory(llptr linkList) {
   addToLinkedList(linkList, newHole);
 }
 
+
+/**
+ * Main function that controls the option menu. Nested calls are
+ * made based on the user's input.
+ *
+ * @return 0 if execution runs without error
+ */
 int main() {
   int input;
   int fileNotRead = 1;
