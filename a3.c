@@ -212,13 +212,12 @@ void printMemory(llptr linkList) {
  */
 void mergeHoles(llptr linkList) {
   nodeptr node = linkList->head;
-  int counter = 3;
   while (node->next != NULL) {
-    counter++;
     nodeptr nextNode = node->next;
     if (strcmp(node->identifier, "H") == 0 && strcmp(nextNode->identifier, "H") == 0) {
       node->limit += nextNode->limit;
       node->next = nextNode->next;
+      free(nextNode);
     } else {
       node = node->next;
     }
