@@ -1,3 +1,20 @@
+/**
+ * File:    a3.h
+ *
+ * Author: Buck Sin - A00805677
+ * Author: Brandon Chan - A01026254
+ * Author: Princeton Dychinco - A00849214
+ * Author: Stanley Chow - A01266659
+ *
+ * COMP 2510: Set B
+ * Date: Nov 30, 2022
+ *
+ * Summary of File:
+ *
+ *      The header file for a3.c. Contains typdefs for pointers to a node and the linked list, and node. Contains
+ *      the struct definitions for the nodes in a linked list and the linked list itself.
+ */
+
 #ifndef A3_A3_H
 #define A3_A3_H
 

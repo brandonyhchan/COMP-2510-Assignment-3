@@ -167,6 +167,23 @@ void readFile(FILE *fptr, llptr linkList) {
     addToLinkedList(linkList, createNode(splitString));
   }
   mergeSort(&(linkList->head));
+
+}
+
+/**
+ * Function checks to see if the created linked list has the valid properties after first sort.
+ * @param linkedList storing the sorting blocks of memory
+ */
+void linkedListCheck(llptr linkedList) {
+    nodeptr currentNode = linkedList -> head;
+
+    while (currentNode -> next != NULL) {
+        if (currentNode -> base + currentNode -> limit != currentNode -> next -> base) {
+            printf("Error: Input file did not have valid properties.");
+            exit(1);
+        }
+        currentNode = currentNode -> next;
+    }
 }
 
 /**
@@ -216,12 +233,15 @@ void mergeHoles(llptr linkList) {
 void compactMemory(llptr linkList) {
   nodeptr node = linkList->head;
   nodeptr prevProcessNode = NULL;
+  nodeptr holeNode = NULL;
   int limitCounter = 0;
 
   while (node != NULL) {
     if (strcmp(node->identifier, "H") == 0) {
+      holeNode = node;
       limitCounter += node->limit;
       node = node->next;
+      free(holeNode);
     } else {
       if (prevProcessNode != NULL) {
         prevProcessNode->next = node;
@@ -270,6 +290,7 @@ void menu(llptr linkedList) {
                         exit(1);
                     }
                     readFile(fptr, linkedList);
+                    linkedListCheck(linkedList);
                     printf("operation successful\n");
                     break;
                 } else {
